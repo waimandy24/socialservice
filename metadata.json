@@ -1,0 +1,6 @@
+{
+  "name": "澳門社會服務百科 MACAU SOCIAL SERVICES HUB",
+  "description": "面向全澳門市民的社會服務百科、智能搜尋、AI服務配對與互動地圖平台。一站搜尋全澳服務，有需要，就搵得到。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
