@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext';
 import { MacauMap } from '../components/MacauMap';
 import { VerificationText } from '../components/ServiceCard';
 import { getCategoryName, getRegionLabel } from '../i18n';
+import { apiFetchJson } from '../lib/apiClient';
 import { MACAU_REGIONS, type Category, type ServiceUnit } from '../types';
 
 const PRESET_MAP_LAYERS = [
@@ -33,8 +34,7 @@ export function MapPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/v1/categories')
-      .then((r) => r.json())
+    apiFetchJson<Category[]>('/api/v1/categories')
       .then((c) => setCategories(Array.isArray(c) ? c : []))
       .catch(() => {});
   }, []);
@@ -45,8 +45,7 @@ export function MapPage() {
     const qs = new URLSearchParams();
     if (category !== 'all') qs.set('category', category);
     if (region !== 'all') qs.set('region', region);
-    fetch(`/api/v1/map?${qs.toString()}`)
-      .then((r) => r.json())
+    apiFetchJson<MapPayload>(`/api/v1/map?${qs.toString()}`)
       .then((payload: MapPayload) => {
         if (!active) return;
         setData(payload);

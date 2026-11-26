@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { getCategoryDesc, getCategoryName, getRegionLabel, UI_TEXT } from '../i18n';
+import { apiFetchJson } from '../lib/apiClient';
+import heroCivicImage from '../assets/images/macau_civic_hero_1795612004794.jpg';
 import { MACAU_PARISHES, MACAU_REGIONS, type Category, type DashboardStats } from '../types';
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -58,8 +60,8 @@ export function HomePage() {
   useEffect(() => {
     let active = true;
     Promise.all([
-      fetch('/api/v1/stats').then((r) => r.json()),
-      fetch('/api/v1/categories').then((r) => r.json()),
+      apiFetchJson<DashboardStats>('/api/v1/stats'),
+      apiFetchJson<Category[]>('/api/v1/categories'),
     ])
       .then(([sData, cData]) => {
         if (!active) return;
@@ -100,7 +102,7 @@ export function HomePage() {
       <section className="relative overflow-hidden bg-[#0F4C81] text-white">
         {!heroImgFailed && (
           <img
-            src="/src/assets/images/macau_civic_hero_1795612004794.jpg"
+            src={heroCivicImage}
             alt="澳門半島與氹仔跨海大橋及社區綠化景觀"
             referrerPolicy="no-referrer"
             onError={() => setHeroImgFailed(true)}

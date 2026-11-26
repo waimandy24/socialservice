@@ -3,6 +3,7 @@ import { AlertTriangle, RotateCcw, Search, SlidersHorizontal, Sparkles } from 'l
 import { useApp } from '../context/AppContext';
 import { ServiceCard } from '../components/ServiceCard';
 import { getCategoryName, getRegionLabel, UI_TEXT } from '../i18n';
+import { apiFetchJson } from '../lib/apiClient';
 import { MACAU_PARISHES, MACAU_REGIONS, type Category, type SearchResponse } from '../types';
 
 export function SearchPage() {
@@ -44,8 +45,7 @@ export function SearchPage() {
   }, [search]);
 
   useEffect(() => {
-    fetch('/api/v1/categories')
-      .then((r) => r.json())
+    apiFetchJson<Category[]>('/api/v1/categories')
       .then((data) => setCategories(Array.isArray(data) ? data : []))
       .catch(() => {});
   }, []);
@@ -85,11 +85,7 @@ export function SearchPage() {
     setLoading(true);
     setError(null);
     const qs = buildQueryString();
-    fetch(`/api/v1/services${qs ? `?${qs}` : ''}`)
-      .then((r) => {
-        if (!r.ok) throw new Error('搜尋服務暫時發生錯誤');
-        return r.json();
-      })
+    apiFetchJson<SearchResponse>(`/api/v1/services${qs ? `?${qs}` : ''}`)
       .then((data: SearchResponse) => {
         if (active) setResults(data);
       })

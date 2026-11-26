@@ -3,6 +3,7 @@ import { AlertTriangle, CheckCircle2, Loader2, Phone, Send, Sparkles } from 'luc
 import { useApp } from '../context/AppContext';
 import { ServiceCard } from '../components/ServiceCard';
 import { getRegionLabel } from '../i18n';
+import { apiFetchJson } from '../lib/apiClient';
 import { MACAU_REGIONS, type AIMatchResponse } from '../types';
 
 const EXAMPLE_PROMPTS = [
@@ -37,16 +38,12 @@ export function AIMatchPage() {
     setResult(null);
 
     try {
-      const res = await fetch('/api/v1/ai-match', {
+      const payload = await apiFetchJson<AIMatchResponse>('/api/v1/ai-match', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: q, locale, region }),
       });
-      const payload = await res.json();
-      if (!res.ok) {
-        throw new Error(payload.error || 'AI 配對服務暫時無法使用，請稍後再試。');
-      }
-      setResult(payload as AIMatchResponse);
+      setResult(payload);
     } catch (err) {
       setError(err instanceof Error ? err.message : '分析失敗，請稍後再試。');
     } finally {

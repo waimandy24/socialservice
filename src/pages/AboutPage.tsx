@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Code2, Database, ExternalLink, ShieldCheck } from 'lucide-react';
+import { apiFetchJson } from '../lib/apiClient';
 import type { DashboardStats, DataSource } from '../types';
 
 export function AboutPage() {
@@ -8,8 +9,8 @@ export function AboutPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/v1/sources').then((r) => r.json()),
-      fetch('/api/v1/stats').then((r) => r.json()),
+      apiFetchJson<DataSource[]>('/api/v1/sources'),
+      apiFetchJson<DashboardStats>('/api/v1/stats'),
     ])
       .then(([src, st]) => {
         setSources(Array.isArray(src) ? src : []);

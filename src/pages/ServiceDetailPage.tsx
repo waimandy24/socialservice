@@ -15,6 +15,7 @@ import { useApp } from '../context/AppContext';
 import { MacauMap } from '../components/MacauMap';
 import { VerificationText } from '../components/ServiceCard';
 import { formatTriState, getRegionLabel, UI_TEXT } from '../i18n';
+import { apiFetchJson } from '../lib/apiClient';
 import type { ServiceUnit } from '../types';
 
 interface SiblingUnit {
@@ -39,11 +40,7 @@ export function ServiceDetailPage({ id }: { id: number }) {
     let active = true;
     setLoading(true);
     setError(null);
-    fetch(`/api/v1/services/${id}`)
-      .then((r) => {
-        if (!r.ok) throw new Error('找不到此服務單位資料');
-        return r.json();
-      })
+    apiFetchJson<{ unit: ServiceUnit; siblings: SiblingUnit[] }>(`/api/v1/services/${id}`)
       .then((data) => {
         if (!active) return;
         setUnit(data.unit);
